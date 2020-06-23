@@ -1,0 +1,68 @@
+﻿<style>
+    #customers {
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        #customers td, #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #customers tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #customers tr:hover {
+            background-color: #ddd;
+        }
+
+        #customers th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #4CAF50;
+            color: white;
+        }
+</style>
+
+<h1> Live Stream data </h1>
+
+<table id="customers">
+    <tr>
+        <th>Company</th>
+        <th>Contact</th>
+        <th>Population</th>
+    </tr>
+
+    <tr>
+        <td>Alfreds Futterkiste</td>
+        <td>Maria Anders</td>
+        <td id="population">0</td>
+    </tr>
+
+</table>
+
+@section scripts {
+
+    <script src="~/signalr/hubs"></script>
+
+    <script>
+        $(function () {
+            var realtime = $.connection.serverHub;
+
+            realtime.client.getDataFromServer = function (data) { // Change population realtime
+                $("#population").text(data);
+            };
+
+           
+
+            $.connection.hub.start().done(function () {
+                setInterval(function () {
+                    realtime.server.sendDataToServer(Math.floor(Math.random() * 1000));
+                }, 3000);
+            });
+        });
+    </script>
+}
